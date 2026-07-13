@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
+import AdSenseBanner from '@/components/AdSenseBanner';
 
 export default function BoothCalculator() {
   const [productPrice, setProductPrice] = useState<string>('');
@@ -39,6 +40,9 @@ export default function BoothCalculator() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
+      {/* ── Top Banner ── */}
+      <AdSenseBanner size="banner" className="mb-2" />
+
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">BOOTH 手数料計算</h1>
         <p className="text-gray-600 dark:text-gray-400">
@@ -148,6 +152,9 @@ export default function BoothCalculator() {
         </div>
       </div>
 
+      {/* ── Mid Banner（黄金の地）── */}
+      <AdSenseBanner size="rectangle" />
+
       {/* 가격대별 수수료 시뮬레이션 카드 */}
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
         <h2 className="text-lg font-semibold mb-4">価格帯別 手数料シミュレーション</h2>
@@ -178,6 +185,9 @@ export default function BoothCalculator() {
           })}
         </div>
       </div>
+
+      {/* ── Bottom Banner ── */}
+      <AdSenseBanner size="leaderboard" />
 
       {/* 주의 문구 */}
       <p className="text-xs text-gray-500 dark:text-gray-400 mt-6 leading-relaxed">

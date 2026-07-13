@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
+import AdSenseBanner from '@/components/AdSenseBanner';
 
 // ────────────────────────────────────────────────
 // 플랫폼별 실수령액 계산 로직 (각 계산기와 동일)
@@ -109,6 +110,9 @@ export default function CompareCalculator() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
+      {/* ── Top Banner ── */}
+      <AdSenseBanner size="banner" className="mb-2" />
+
       {/* 헤더 */}
       <div>
         <h1 className="text-3xl font-bold mb-2">プラットフォーム 手取り比較</h1>
@@ -223,6 +227,9 @@ export default function CompareCalculator() {
         })}
       </div>
 
+      {/* ── Mid Banner（黄金の地）── */}
+      <AdSenseBanner size="rectangle" />
+
       {/* 전제 조건 안내 */}
       {isValid && (
         <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-xs text-gray-500 dark:text-gray-400 space-y-1">
@@ -233,6 +240,9 @@ export default function CompareCalculator() {
           <p className="mt-2">各プラットフォームの詳細条件（R-18設定・BOOST額等）は各計算機でご確認ください。</p>
         </div>
       )}
+
+      {/* ── Bottom Banner ── */}
+      <AdSenseBanner size="leaderboard" />
 
       <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
         ※ 본 비교 계산기는 각 플랫폼의 기본 설정 기준 시뮬레이션이며, 실제 정산 금액은 설정 조건에 따라 달라질 수 있습니다.<br />

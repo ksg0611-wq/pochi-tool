@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
+import AdSenseBanner from '@/components/AdSenseBanner';
 
 export default function FanboxCalculator() {
   const [amount, setAmount] = useState<string>('');
@@ -38,6 +39,9 @@ export default function FanboxCalculator() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
+      {/* ── Top Banner ── */}
+      <AdSenseBanner size="banner" className="mb-2" />
+
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">FANBOX 手数料計算</h1>
         <p className="text-gray-600 dark:text-gray-400">最新の改定手数料率に対応（R-18設定・振込手数料考慮）</p>
@@ -105,6 +109,9 @@ export default function FanboxCalculator() {
         </div>
       </div>
 
+      {/* ── Mid Banner（黄金の地）── */}
+      <AdSenseBanner size="rectangle" />
+
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
         <h2 className="text-lg font-semibold mb-4">支援者数の目安（シミュレーション）</h2>
         <p className="text-sm text-gray-500 mb-4">目標金額（{numAmount > 0 ? `¥${numAmount.toLocaleString()}` : '未入力'}）を達成するために必要な支援者数の目安です。</p>
@@ -123,6 +130,9 @@ export default function FanboxCalculator() {
           })}
         </div>
       </div>
+
+      {/* ── Bottom Banner ── */}
+      <AdSenseBanner size="leaderboard" />
 
       <p className="text-xs text-gray-500 dark:text-gray-400 mt-6 leading-relaxed">
         ※ 본 계산기는 간이 시뮬레이터이며, 월중 R-18 설정 변경 등 특수 조건에 따라 실제 정산 금액과 일부 오차가 발생할 수 있습니다.<br />
