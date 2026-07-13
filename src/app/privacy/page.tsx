@@ -32,7 +32,7 @@ export default function PrivacyPage() {
         </p>
 
         <p className="text-right mt-8 text-sm text-gray-500">
-          策定日：2026年7月13日
+          策定日：2026年7月14日
         </p>
       </article>
     </div>
