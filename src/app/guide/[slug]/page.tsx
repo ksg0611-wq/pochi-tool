@@ -2,6 +2,8 @@ import { getAllPostSlugs, getPostData } from '@/lib/markdown';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const paths = getAllPostSlugs();
   return paths.map((path) => ({
@@ -9,23 +11,26 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   try {
-    const postData = await getPostData(params.slug);
+    const resolvedParams = await params;
+    const postData = await getPostData(resolvedParams.slug);
     return {
       title: `${postData.title} | PochiTool`,
       description: postData.excerpt || `${postData.title}のガイド記事です。`,
     };
   } catch (e) {
+    console.error("generateMetadata エラー:", e);
     return {
       title: 'Not Found | PochiTool',
     };
   }
 }
 
-export default async function Post({ params }: { params: { slug: string } }) {
+export default async function Post({ params }: { params: Promise<{ slug: string }> }) {
   try {
-    const postData = await getPostData(params.slug);
+    const resolvedParams = await params;
+    const postData = await getPostData(resolvedParams.slug);
     return (
       <article className="max-w-3xl mx-auto py-8">
         <h1 className="text-4xl font-extrabold mb-4">{postData.title}</h1>
@@ -37,6 +42,8 @@ export default async function Post({ params }: { params: { slug: string } }) {
       </article>
     );
   } catch (error) {
+    console.error("Post コンポーネント実行エラー:", error);
     notFound();
   }
 }
+

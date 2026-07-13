@@ -4,13 +4,7 @@ import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
 
-// turbopackIgnore コメントを process.cwd() の直前に記述することで
-// Turbopack の NFT（Node File Tracing）静的解析警告を抑制する
-// refs: https://nextjs.org/docs/app/api-reference/turbopack
-const postsDirectory = path.join(
-  /* turbopackIgnore: true */ process.cwd(),
-  'posts'
-);
+const postsDirectory = path.join(process.cwd(), 'posts');
 
 export interface PostData {
   slug: string;
