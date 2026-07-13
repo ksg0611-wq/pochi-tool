@@ -1,8 +1,15 @@
+import { Metadata } from 'next';
+import SkebCalculator from './SkebCalculator';
+
+export const metadata: Metadata = {
+  title: 'Skeb 수수료 및 실수령액 계산기 | PochiTool',
+  description: 'Skeb 크리에이터を 위한 X(트위터) 연동 할인 수수료(6.8%) 및 무료 출금 정책이 완벽 반영된 실수령액 계산기입니다.',
+};
+
 export default function SkebPage() {
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Skeb 手数料計算</h1>
-      <p className="text-gray-600 dark:text-gray-400">※ 計算ロジックは準備中です。</p>
+    <div className="w-full">
+      <SkebCalculator />
     </div>
   );
 }
