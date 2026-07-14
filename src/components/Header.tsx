@@ -27,6 +27,7 @@ export default function Header() {
           <Link href="/fanbox" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FANBOX</Link>
           <Link href="/skeb" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Skeb</Link>
           <Link href="/booth" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">BOOTH</Link>
+          <Link href="/price-calculator" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">単価計算</Link>
           <Link href="/compare" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Compare</Link>
           <Link href="/guide" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Guide</Link>
         </nav>
@@ -67,6 +68,7 @@ export default function Header() {
           <Link href="/fanbox" className="text-lg font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors" onClick={closeMenu}>FANBOX</Link>
           <Link href="/skeb" className="text-lg font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors" onClick={closeMenu}>Skeb</Link>
           <Link href="/booth" className="text-lg font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors" onClick={closeMenu}>BOOTH</Link>
+          <Link href="/price-calculator" className="text-lg font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors" onClick={closeMenu}>単価計算</Link>
           <Link href="/compare" className="text-lg font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors" onClick={closeMenu}>Compare</Link>
           <Link href="/guide" className="text-lg font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors" onClick={closeMenu}>Guide</Link>
         </nav>
