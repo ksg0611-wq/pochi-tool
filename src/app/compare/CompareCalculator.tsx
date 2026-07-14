@@ -50,8 +50,8 @@ const RANK_RING = [
 
 export default function CompareCalculator() {
   const [amount, setAmount] = useState<string>('');
-  const [isSkebXLinked, setIsSkebXLinked] = useState<boolean>(true);
-  const [isSkebPast30Days, setIsSkebPast30Days] = useState<boolean>(true);
+  const [isSkebXLinked, setIsSkebXLinked] = useState<boolean>(false);
+  const [isSkebPast30Days, setIsSkebPast30Days] = useState<boolean>(false);
 
   const numAmount = parseInt(amount || '0', 10);
   const isValid = !isNaN(numAmount) && numAmount > 0;
