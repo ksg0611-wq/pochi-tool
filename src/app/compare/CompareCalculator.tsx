@@ -17,12 +17,18 @@ function calcFanbox(amount: number): { net: number; fee: number; withdrawal: num
   return { net, fee: platformFee, withdrawal };
 }
 
-function calcSkeb(amount: number): { net: number; fee: number; withdrawal: number } {
-  // 最大割引（X連携＆過去30日募集）基準: 5000円以上は6.8%、未満は9.8%
-  const feeRate = amount >= 5000 ? 0.068 : 0.098;
+function calcSkeb(amount: number, isXLinked: boolean, isPast30Days: boolean): { net: number; fee: number; withdrawal: number; rate: number } {
+  let feeRate = 0.098;
+  if (amount >= 5000) {
+    let discountCount = 0;
+    if (isXLinked) discountCount++;
+    if (isPast30Days) discountCount++;
+    if (discountCount === 1) feeRate = 0.083;
+    if (discountCount === 2) feeRate = 0.068;
+  }
   const platformFee = Math.floor(amount * feeRate);
   const net = Math.max(0, amount - platformFee);
-  return { net, fee: platformFee, withdrawal: 0 };
+  return { net, fee: platformFee, withdrawal: 0, rate: feeRate };
 }
 
 function calcBooth(amount: number): { net: number; fee: number; withdrawal: number } {
@@ -34,54 +40,6 @@ function calcBooth(amount: number): { net: number; fee: number; withdrawal: numb
   return { net, fee: serviceFee, withdrawal };
 }
 
-// ────────────────────────────────────────────────
-// 플랫폼 정의
-// ────────────────────────────────────────────────
-const PLATFORMS = [
-  {
-    id: 'fanbox',
-    name: 'FANBOX',
-    note: '全年齢（R-18なし）・10%手数料',
-    href: '/fanbox',
-    calc: calcFanbox,
-    color: {
-      bg: 'bg-blue-50 dark:bg-blue-900/20',
-      border: 'border-blue-200 dark:border-blue-700',
-      borderTop: 'border-t-blue-500',
-      accent: 'text-blue-600 dark:text-blue-400',
-      badge: 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300',
-    },
-  },
-  {
-    id: 'skeb',
-    name: 'Skeb',
-    note: '最大割引適用（6.8%〜9.8%）・振込無料',
-    href: '/skeb',
-    calc: calcSkeb,
-    color: {
-      bg: 'bg-teal-50 dark:bg-teal-900/20',
-      border: 'border-teal-200 dark:border-teal-700',
-      borderTop: 'border-t-teal-500',
-      accent: 'text-teal-600 dark:text-teal-400',
-      badge: 'bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300',
-    },
-  },
-  {
-    id: 'booth',
-    name: 'BOOTH',
-    note: 'BOOSTなし・5.6%+22円',
-    href: '/booth',
-    calc: calcBooth,
-    color: {
-      bg: 'bg-orange-50 dark:bg-orange-900/20',
-      border: 'border-orange-200 dark:border-orange-700',
-      borderTop: 'border-t-orange-500',
-      accent: 'text-orange-600 dark:text-orange-400',
-      badge: 'bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300',
-    },
-  },
-];
-
 const RANK_MEDALS = ['👑', '🥈', '🥉'];
 const RANK_LABELS = ['1位', '2位', '3位'];
 const RANK_RING = [
@@ -90,21 +48,67 @@ const RANK_RING = [
   'ring-1 ring-gray-200 dark:ring-gray-700',
 ];
 
-// ────────────────────────────────────────────────
-// 컴포넌트
-// ────────────────────────────────────────────────
 export default function CompareCalculator() {
   const [amount, setAmount] = useState<string>('');
+  const [isSkebXLinked, setIsSkebXLinked] = useState<boolean>(true);
+  const [isSkebPast30Days, setIsSkebPast30Days] = useState<boolean>(true);
+
   const numAmount = parseInt(amount || '0', 10);
   const isValid = !isNaN(numAmount) && numAmount > 0;
 
   // 3개 플랫폼 계산 후 실수령액 기준 내림차순 정렬
   const ranked = useMemo(() => {
-    return PLATFORMS.map((p) => {
-      const result = p.calc(numAmount);
-      return { ...p, ...result };
-    }).sort((a, b) => b.net - a.net);
-  }, [numAmount]);
+    const fanboxResult = calcFanbox(numAmount);
+    const skebResult = calcSkeb(numAmount, isSkebXLinked, isSkebPast30Days);
+    const boothResult = calcBooth(numAmount);
+
+    const platforms = [
+      {
+        id: 'fanbox',
+        name: 'FANBOX',
+        note: '全年齢（R-18なし）・10%手数料',
+        href: '/fanbox',
+        ...fanboxResult,
+        color: {
+          bg: 'bg-blue-50 dark:bg-blue-900/20',
+          border: 'border-blue-200 dark:border-blue-700',
+          borderTop: 'border-t-blue-500',
+          accent: 'text-blue-600 dark:text-blue-400',
+          badge: 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300',
+        },
+      },
+      {
+        id: 'skeb',
+        name: 'Skeb',
+        note: `選択条件適用（${(skebResult.rate * 100).toFixed(1)}%）・振込無料`,
+        href: '/skeb',
+        ...skebResult,
+        color: {
+          bg: 'bg-teal-50 dark:bg-teal-900/20',
+          border: 'border-teal-200 dark:border-teal-700',
+          borderTop: 'border-t-teal-500',
+          accent: 'text-teal-600 dark:text-teal-400',
+          badge: 'bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300',
+        },
+      },
+      {
+        id: 'booth',
+        name: 'BOOTH',
+        note: 'BOOSTなし・5.6%+22円',
+        href: '/booth',
+        ...boothResult,
+        color: {
+          bg: 'bg-orange-50 dark:bg-orange-900/20',
+          border: 'border-orange-200 dark:border-orange-700',
+          borderTop: 'border-t-orange-500',
+          accent: 'text-orange-600 dark:text-orange-400',
+          badge: 'bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300',
+        },
+      },
+    ];
+
+    return platforms.sort((a, b) => b.net - a.net);
+  }, [numAmount, isSkebXLinked, isSkebPast30Days]);
 
   // 1위와의 차액
   const topNet = ranked[0]?.net ?? 0;
@@ -127,7 +131,7 @@ export default function CompareCalculator() {
         <label htmlFor="compare-amount" className="block text-sm font-medium mb-3">
           目標・比較したい金額（円）
         </label>
-        <div className="relative">
+        <div className="relative mb-6">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">¥</span>
           <input
             id="compare-amount"
@@ -139,6 +143,45 @@ export default function CompareCalculator() {
             className="w-full pl-10 pr-4 py-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow text-xl font-semibold"
             placeholder="例: 50000"
           />
+        </div>
+
+        {/* Skeb 할인 조건 설정 */}
+        <div className="bg-teal-50 dark:bg-teal-900/10 p-4 rounded-xl border border-teal-100 dark:border-teal-800/30">
+          <p className="text-sm font-medium text-teal-800 dark:text-teal-200 mb-3">
+            Skeb 割引シミュレーション条件
+          </p>
+          <div className="space-y-3">
+            <label className="flex items-start space-x-3 cursor-pointer group">
+              <div className="relative mt-0.5">
+                <input
+                  type="checkbox"
+                  checked={isSkebXLinked}
+                  onChange={(e) => setIsSkebXLinked(e.target.checked)}
+                  className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500 dark:bg-gray-800 dark:border-gray-700"
+                />
+              </div>
+              <div>
+                <span className="text-sm text-gray-700 dark:text-gray-300 block">
+                  X（旧Twitter）連携あり (-1.5%)
+                </span>
+              </div>
+            </label>
+            <label className="flex items-start space-x-3 cursor-pointer group">
+              <div className="relative mt-0.5">
+                <input
+                  type="checkbox"
+                  checked={isSkebPast30Days}
+                  onChange={(e) => setIsSkebPast30Days(e.target.checked)}
+                  className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500 dark:bg-gray-800 dark:border-gray-700"
+                />
+              </div>
+              <div>
+                <span className="text-sm text-gray-700 dark:text-gray-300 block">
+                  過去30日間に同ジャンルの募集あり (-1.5%)
+                </span>
+              </div>
+            </label>
+          </div>
         </div>
       </div>
 
@@ -236,9 +279,9 @@ export default function CompareCalculator() {
         <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-xs text-gray-500 dark:text-gray-400 space-y-1">
           <p className="font-semibold text-gray-600 dark:text-gray-300 mb-2">比較の前提条件</p>
           <p>・ FANBOX：全年齢設定（R-18なし）、手数料 10%</p>
-          <p>・ Skeb：最大割引適用（5,000円以上は6.8%、未満は9.8%）、振込手数料 0円</p>
+          <p>・ Skeb：上記で設定した割引条件を適用（5,000円未満は無条件で9.8%）、振込手数料 0円</p>
           <p>・ BOOTH：BOOST なし、手数料 5.6% + 22円</p>
-          <p className="mt-2">各プラットフォームの詳細条件（R-18設定・BOOST額等）は各計算機でご確認ください。</p>
+          <p className="mt-2 text-red-500">※ Skebはリクエスト金額が5,000円未満の場合、割引条件を満たしていても一律9.8%の手数料が適用されます。</p>
         </div>
       )}
 
