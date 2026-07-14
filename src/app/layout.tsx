@@ -15,6 +15,7 @@ const ADSENSE_PUBLISHER_ID = "ca-pub-XXXXXXXXXXXXXXXXX";
 // ───────────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://pochi-tool.com"),
   title: "PochiTool - クリエイター向け手数料計算ツール",
   description: "FANBOX、Skeb、BOOTHなどのプラットフォームの手数料を簡単に計算・比較できるツールです。",
   openGraph: {
@@ -24,6 +25,14 @@ export const metadata: Metadata = {
     siteName: "PochiTool",
     locale: "ja_JP",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png", // public 폴더 내에 실제 이미지를 배치해주세요.
+        width: 1200,
+        height: 630,
+        alt: "PochiTool - クリエイター向け手数料計算ツール",
+      },
+    ],
   },
 };
 

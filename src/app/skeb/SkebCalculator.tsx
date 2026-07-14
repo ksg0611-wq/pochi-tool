@@ -181,7 +181,6 @@ export default function SkebCalculator() {
       {/* ── Bottom Banner ── */}
       <AdSenseBanner size="leaderboard" />
 
-      {/* 주의 문구 */}
       <p className="text-xs text-gray-500 dark:text-gray-400 mt-6 leading-relaxed">
         ※ 本計算機は基本手数料率（9.8%）を基準としており、Skebが不定期に実施する「手数料無料キャンペーン（0%）」期間中は手数料が発生しない場合があります。<br />
         ※ 5,000円未満のリクエストには一律で基本手数料（9.8%）が適用されます。

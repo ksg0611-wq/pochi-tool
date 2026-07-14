@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import BoothCalculator from './BoothCalculator';
 
 export const metadata: Metadata = {
-  title: 'BOOTH 수수료 및 실수령액 계산기 | PochiTool',
-  description: 'BOOTH 크리에이터를 위한 결제 수수료(5.6%+22엔) 및 BOOST 후원금이 완벽하게 반영된 정밀 계산기입니다.',
+  title: 'BOOTH 手数料・手取り計算機 | PochiTool',
+  description: 'BOOTHクリエイターのための決済手数料（5.6%+22円）およびBOOST（上乗せ支援）が完全に反映された高精度な計算機です。',
 };
 
 export default function BoothPage() {

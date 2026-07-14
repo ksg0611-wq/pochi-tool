@@ -5,11 +5,11 @@ import Link from 'next/link';
 import AdSenseBanner from '@/components/AdSenseBanner';
 
 // ────────────────────────────────────────────────
-// 플랫폼별 실수령액 계산 로직 (각 계산기와 동일)
+// プラットフォーム別手取り額計算ロジック
 // ────────────────────────────────────────────────
 
 function calcFanbox(amount: number): { net: number; fee: number; withdrawal: number } {
-  // R-18 미설정(전연령) 기준: 10%
+  // R-18未設定（全年齢）基準: 10%
   const platformFee = Math.floor(amount * 0.10);
   const remaining = amount - platformFee;
   const withdrawal = remaining > 0 ? (remaining < 30000 ? 200 : 300) : 0;
@@ -32,7 +32,7 @@ function calcSkeb(amount: number, isXLinked: boolean, isPast30Days: boolean): { 
 }
 
 function calcBooth(amount: number): { net: number; fee: number; withdrawal: number } {
-  // BOOST 없이 상품가 기준: 5.6% + 22엔
+  // BOOSTなし商品価格基準: 5.6% + 22円
   const serviceFee = Math.floor(amount * 0.056) + 22;
   const afterFee = amount - serviceFee;
   const withdrawal = afterFee > 0 ? (afterFee < 30000 ? 200 : 300) : 0;
@@ -56,7 +56,7 @@ export default function CompareCalculator() {
   const numAmount = parseInt(amount || '0', 10);
   const isValid = !isNaN(numAmount) && numAmount > 0;
 
-  // 3개 플랫폼 계산 후 실수령액 기준 내림차순 정렬
+  // 3つのプラットフォーム計算後、手取り額基準の降順に並べ替え
   const ranked = useMemo(() => {
     const fanboxResult = calcFanbox(numAmount);
     const skebResult = calcSkeb(numAmount, isSkebXLinked, isSkebPast30Days);
@@ -110,7 +110,7 @@ export default function CompareCalculator() {
     return platforms.sort((a, b) => b.net - a.net);
   }, [numAmount, isSkebXLinked, isSkebPast30Days]);
 
-  // 1위와의 차액
+  // 1位との差額
   const topNet = ranked[0]?.net ?? 0;
 
   return (
@@ -126,7 +126,7 @@ export default function CompareCalculator() {
         </p>
       </div>
 
-      {/* 입력 */}
+      {/* 入力エリア */}
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
         <label htmlFor="compare-amount" className="block text-sm font-medium mb-3">
           目標・比較したい金額（円）
@@ -185,7 +185,7 @@ export default function CompareCalculator() {
         </div>
       </div>
 
-      {/* 랭킹 카드 */}
+      {/* ランキングカード */}
       <div className="space-y-4">
         <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
           手取り額ランキング
@@ -212,7 +212,7 @@ export default function CompareCalculator() {
               `}
             >
               <div className="flex items-start justify-between gap-4">
-                {/* 왼쪽: 순위 + 플랫폼명 */}
+                {/* 左側: 順位 + プラットフォーム名 */}
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="text-3xl leading-none flex-shrink-0">{RANK_MEDALS[i]}</span>
                   <div>
@@ -226,7 +226,7 @@ export default function CompareCalculator() {
                   </div>
                 </div>
 
-                {/* 오른쪽: 실수령액 */}
+                {/* 右側: 手取り額 */}
                 <div className="text-right flex-shrink-0">
                   <p className={`text-2xl md:text-3xl font-extrabold ${p.color.accent}`}>
                     {isValid ? `¥ ${p.net.toLocaleString()}` : '—'}
@@ -239,7 +239,7 @@ export default function CompareCalculator() {
                 </div>
               </div>
 
-              {/* 수수료 내역 */}
+              {/* 手数料内訳 */}
               {isValid && (
                 <div className="mt-4 flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200/60 dark:border-gray-700/60 pt-3">
                   <span>サービス手数料 <strong className="text-red-500">¥{p.fee.toLocaleString()}</strong></span>
@@ -274,7 +274,7 @@ export default function CompareCalculator() {
       {/* ── Mid Banner（黄金の地）── */}
       <AdSenseBanner size="rectangle" />
 
-      {/* 전제 조건 안내 */}
+      {/* 前提条件案内 */}
       {isValid && (
         <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-xs text-gray-500 dark:text-gray-400 space-y-1">
           <p className="font-semibold text-gray-600 dark:text-gray-300 mb-2">比較の前提条件</p>
