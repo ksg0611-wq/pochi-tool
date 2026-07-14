@@ -24,17 +24,20 @@ export default function Home() {
           <h2 className="text-xl font-bold mb-4 flex items-center justify-center gap-2">
             <span>⚡</span> ツールへ直接アクセス
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Link href="/fanbox" className="px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shadow-sm hover:shadow text-sm font-semibold">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <Link href="/fanbox" className="px-3 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shadow-sm hover:shadow text-sm font-semibold">
               FANBOX計算
             </Link>
-            <Link href="/skeb" className="px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shadow-sm hover:shadow text-sm font-semibold">
+            <Link href="/skeb" className="px-3 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shadow-sm hover:shadow text-sm font-semibold">
               Skeb計算
             </Link>
-            <Link href="/booth" className="px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shadow-sm hover:shadow text-sm font-semibold">
+            <Link href="/booth" className="px-3 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shadow-sm hover:shadow text-sm font-semibold">
               BOOTH計算
             </Link>
-            <Link href="/compare" className="px-4 py-3 bg-blue-600 text-white border border-transparent rounded-xl hover:bg-blue-700 transition-colors shadow-sm hover:shadow text-sm font-semibold">
+            <Link href="/price-calculator" className="px-3 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shadow-sm hover:shadow text-sm font-semibold">
+              単価計算
+            </Link>
+            <Link href="/compare" className="px-3 py-3 bg-blue-600 text-white border border-transparent rounded-xl hover:bg-blue-700 transition-colors shadow-sm hover:shadow text-sm font-semibold col-span-2 md:col-span-1">
               統合比較
             </Link>
           </div>
