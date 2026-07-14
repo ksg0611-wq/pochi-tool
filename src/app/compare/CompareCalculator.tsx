@@ -289,7 +289,8 @@ export default function CompareCalculator() {
       <AdSenseBanner size="leaderboard" />
 
       <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-        ※ 本比較計算機は各プラットフォームの基本設定を基準としたシミュレーションです。実際の精算金額は条件により異なります。
+        ※ 本比較計算機は各プラットフォームの基本設定を基準としたシミュレーションです。実際の精算金額は条件により異なります。<br />
+        最終確認日: 2026年7月14日
       </p>
     </div>
   );

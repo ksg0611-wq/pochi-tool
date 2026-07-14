@@ -190,7 +190,8 @@ export default function BoothCalculator() {
       <AdSenseBanner size="leaderboard" />
 
       <p className="text-xs text-gray-500 dark:text-gray-400 mt-6 leading-relaxed">
-        ※ 本計算機は1回の注文（決済）を基準とした手数料（5.6% + 22円）を計算します。複数回に分割した決済が発生した場合、実際の手数料合計は異なる場合があります。
+        ※ 本計算機は1回の注文（決済）を基準とした手数料（5.6% + 22円）を計算します。複数回に分割した決済が発生した場合、実際の手数料合計は異なる場合があります。<br />
+        最終確認日: 2026年7月14日
       </p>
     </div>
   );

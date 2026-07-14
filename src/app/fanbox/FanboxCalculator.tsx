@@ -135,7 +135,8 @@ export default function FanboxCalculator() {
       <AdSenseBanner size="leaderboard" />
 
       <p className="text-xs text-gray-500 dark:text-gray-400 mt-6 leading-relaxed">
-        ※ 本計算機は簡易シミュレーターであり、月中のR-18設定変更など特殊条件によって実際の精算額と一部誤差が生じる場合があります。
+        ※ 本計算機は簡易シミュレーターであり、月中のR-18設定変更など特殊条件によって実際の精算額と一部誤差が生じる場合があります。<br />
+        最終確認日: 2026年7月14日
       </p>
     </div>
   );

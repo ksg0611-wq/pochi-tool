@@ -29,13 +29,13 @@ export default function AboutPage() {
 
         <h3>運営者情報</h3>
         <ul>
-          <li><strong>運営者:</strong> PochiTool 運営事務局</li>
+          <li><strong>運営者:</strong> PochiTool 開発・運営者 (個人)</li>
           <li><strong>設立目的:</strong> 日本国内のインディーズクリエイター（イラストレーター、VTuberなど）が正当な収益を精密にシミュレーションし、プラットフォームごとの手数料率を最適化することで、創作活動に集中できるよう支援する専門ツールおよび情報を提供すること。</li>
         </ul>
         
         <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 mt-6">
           <p className="text-sm m-0 text-blue-900 dark:text-blue-100">
-            💡 <strong>情報の信頼性について:</strong> 当サイトのすべての計算ロジックおよび税務情報は、各プラットフォームの公式ガイドラインおよび現行税率（2026年基準）に基づいて定期的に検証および更新されています。
+            ※ 本サイトはプラットフォームの手数料計算のための参考情報を提供するものであり、税務・会計相談を代替するものではありません。正確な税務処理については、専門家や管轄の税務署にご確認ください。
           </p>
         </div>
       </article>
