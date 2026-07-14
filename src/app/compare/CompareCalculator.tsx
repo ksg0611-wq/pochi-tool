@@ -18,8 +18,9 @@ function calcFanbox(amount: number): { net: number; fee: number; withdrawal: num
 }
 
 function calcSkeb(amount: number): { net: number; fee: number; withdrawal: number } {
-  // X 연동 기준: 6.8%, 출금 수수료 0엔
-  const platformFee = Math.floor(amount * 0.068);
+  // 最大割引（X連携＆過去30日募集）基準: 5000円以上は6.8%、未満は9.8%
+  const feeRate = amount >= 5000 ? 0.068 : 0.098;
+  const platformFee = Math.floor(amount * feeRate);
   const net = Math.max(0, amount - platformFee);
   return { net, fee: platformFee, withdrawal: 0 };
 }
@@ -54,7 +55,7 @@ const PLATFORMS = [
   {
     id: 'skeb',
     name: 'Skeb',
-    note: 'X連携あり・6.8%手数料・振込無料',
+    note: '最大割引適用（6.8%〜9.8%）・振込無料',
     href: '/skeb',
     calc: calcSkeb,
     color: {
@@ -235,7 +236,7 @@ export default function CompareCalculator() {
         <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-xs text-gray-500 dark:text-gray-400 space-y-1">
           <p className="font-semibold text-gray-600 dark:text-gray-300 mb-2">比較の前提条件</p>
           <p>・ FANBOX：全年齢設定（R-18なし）、手数料 10%</p>
-          <p>・ Skeb：X（旧Twitter）アカウント連携あり、手数料 6.8%、振込手数料 0円</p>
+          <p>・ Skeb：最大割引適用（5,000円以上は6.8%、未満は9.8%）、振込手数料 0円</p>
           <p>・ BOOTH：BOOST なし、手数料 5.6% + 22円</p>
           <p className="mt-2">各プラットフォームの詳細条件（R-18設定・BOOST額等）は各計算機でご確認ください。</p>
         </div>
@@ -245,8 +246,7 @@ export default function CompareCalculator() {
       <AdSenseBanner size="leaderboard" />
 
       <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-        ※ 본 비교 계산기는 각 플랫폼의 기본 설정 기준 시뮬레이션이며, 실제 정산 금액은 설정 조건에 따라 달라질 수 있습니다.<br />
-        （※ 本比較計算機は各プラットフォームの基本設定を基準としたシミュレーションです。実際の精算金額は条件により異なります。）
+        ※ 本比較計算機は各プラットフォームの基本設定を基準としたシミュレーションです。実際の精算金額は条件により異なります。
       </p>
     </div>
   );
