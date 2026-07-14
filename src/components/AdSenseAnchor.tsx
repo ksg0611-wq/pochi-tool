@@ -9,7 +9,7 @@ export default function AdSenseAnchor() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+      className="hidden fixed bottom-0 left-0 right-0 z-50 md:hidden"
       role="complementary"
       aria-label="広告バナー"
     >

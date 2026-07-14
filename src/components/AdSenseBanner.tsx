@@ -50,7 +50,7 @@ export default function AdSenseBanner({
   if (!slot || PUBLISHER_ID.includes("XXXXXXXX")) {
     return (
       <div
-        className={`w-full ${minHeight} flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800/60 ${className}`}
+        className={`hidden w-full ${minHeight} flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800/60 ${className}`}
         aria-hidden="true"
       >
         <span className="text-xs text-gray-400 dark:text-gray-500 select-none">
