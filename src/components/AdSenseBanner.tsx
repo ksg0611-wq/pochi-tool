@@ -46,18 +46,9 @@ export default function AdSenseBanner({
     }
   }, [slot]);
 
-  // 開発モード or スロット未設定 → プレースホルダー表示
+  // 開発モード or スロット未設定の場合はプレースホルダーを表示せず、DOMから完全に削除（条件付きレンダリング）
   if (!slot || PUBLISHER_ID.includes("XXXXXXXX")) {
-    return (
-      <div
-        className={`hidden w-full ${minHeight} flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800/60 ${className}`}
-        aria-hidden="true"
-      >
-        <span className="text-xs text-gray-400 dark:text-gray-500 select-none">
-          {label}（審査通過後に有効化）
-        </span>
-      </div>
-    );
+    return null;
   }
 
   return (

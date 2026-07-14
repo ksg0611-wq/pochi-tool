@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 
+const PUBLISHER_ID = "ca-pub-XXXXXXXXXXXXXXXXX"; // ← 審査通過後にここを差し替える
+
 export default function AdSenseAnchor() {
   const [visible, setVisible] = useState(true);
 
-  if (!visible) return null;
+  // 開発モード or モックIDの場合は完全にDOMから削除（条件付きレンダリング）
+  if (!visible || PUBLISHER_ID.includes("XXXXXXXX")) return null;
 
   return (
     <div
-      className="hidden fixed bottom-0 left-0 right-0 z-50 md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
       role="complementary"
       aria-label="広告バナー"
     >
