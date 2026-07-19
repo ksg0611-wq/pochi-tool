@@ -1,12 +1,37 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import AdSenseBanner from '@/components/AdSenseBanner';
+import { useAutoSave } from '@/hooks/useAutoSave';
+import { saveHistory, savePreset, getPresets, PresetEntry } from '@/lib/historyStore';
 
 export default function SkebCalculator() {
-  const [amount, setAmount] = useState<string>('');
-  const [isXLinked, setIsXLinked] = useState<boolean>(false);
-  const [isPast30Days, setIsPast30Days] = useState<boolean>(false);
+  const [amount, setAmount] = useAutoSave<string>('skeb_amount', '');
+  const [isXLinked, setIsXLinked] = useAutoSave<boolean>('skeb_isXLinked', false);
+  const [isPast30Days, setIsPast30Days] = useAutoSave<boolean>('skeb_isPast30Days', false);
+  const [presets, setPresets] = useState<PresetEntry[]>([]);
+
+  useEffect(() => {
+    setPresets(getPresets('skeb'));
+  }, []);
+
+  const handleSavePreset = () => {
+    const name = window.prompt('プリセット名を入力してください', 'Skeb基本設定');
+    if (name) {
+      savePreset({ name, platform: 'skeb', data: { amount, isXLinked, isPast30Days } });
+      setPresets(getPresets('skeb'));
+      window.alert('プリセットを保存しました。');
+    }
+  };
+
+  const handleLoadPreset = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const p = presets.find(x => x.id === e.target.value);
+    if (p) {
+      setAmount(p.data.amount);
+      setIsXLinked(p.data.isXLinked);
+      setIsPast30Days(p.data.isPast30Days);
+    }
+  };
 
   const numAmount = parseInt(amount || '0', 10);
 
@@ -32,6 +57,24 @@ export default function SkebCalculator() {
     return { platformFee, netAmount, feeRate: currentFeeRate };
   }, [numAmount, isXLinked, isPast30Days]);
 
+  const handleSaveHistory = () => {
+    if (numAmount <= 0) return;
+    
+    let detailArr = [];
+    if (isXLinked) detailArr.push('X連携');
+    if (isPast30Days) detailArr.push('30日以内');
+    const details = detailArr.length > 0 ? detailArr.join(', ') : '割引なし';
+
+    saveHistory({
+      platform: 'Skeb',
+      grossAmount: numAmount,
+      fee: platformFee,
+      netAmount: netAmount,
+      details: details,
+    });
+    window.alert('計算結果を履歴に保存しました。');
+  };
+
   const feeRatePercent = `${(feeRate * 100).toFixed(1)}%`;
 
   return (
@@ -48,7 +91,20 @@ export default function SkebCalculator() {
 
       {/* 입력 영역 */}
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
-        <h2 className="text-xl font-semibold mb-4">入力条件</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">入力条件</h2>
+          <div className="flex gap-2 items-center">
+            {presets.length > 0 && (
+              <select onChange={handleLoadPreset} className="text-sm border-gray-300 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800 px-2 py-1">
+                <option value="">プリセット読込...</option>
+                {presets.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+            )}
+            <button onClick={handleSavePreset} className="text-sm bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300 px-3 py-1 rounded-md hover:bg-teal-200 transition-colors">
+              プリセット保存
+            </button>
+          </div>
+        </div>
         <div className="space-y-6">
           <div>
             <label htmlFor="skeb-amount" className="block text-sm font-medium mb-2">
@@ -145,6 +201,19 @@ export default function SkebCalculator() {
               ¥ {netAmount.toLocaleString()}
             </span>
           </div>
+        </div>
+
+        <div className="mt-8 border-t border-teal-200/50 dark:border-teal-800/50 pt-6">
+          <button
+            onClick={handleSaveHistory}
+            disabled={numAmount <= 0}
+            className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            この計算結果を履歴に保存
+          </button>
+          <p className="text-xs text-teal-600/80 dark:text-teal-300/80 text-center mt-3">
+            ※ このデータは現在のブラウザにのみ保存され、ブラウザのキャッシュを削除すると初期化されます。
+          </p>
         </div>
       </div>
 

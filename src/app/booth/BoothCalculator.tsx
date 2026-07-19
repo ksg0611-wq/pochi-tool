@@ -1,11 +1,35 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import AdSenseBanner from '@/components/AdSenseBanner';
+import { useAutoSave } from '@/hooks/useAutoSave';
+import { saveHistory, savePreset, getPresets, PresetEntry } from '@/lib/historyStore';
 
 export default function BoothCalculator() {
-  const [productPrice, setProductPrice] = useState<string>('');
-  const [boostAmount, setBoostAmount] = useState<string>('');
+  const [productPrice, setProductPrice] = useAutoSave<string>('booth_productPrice', '');
+  const [boostAmount, setBoostAmount] = useAutoSave<string>('booth_boostAmount', '');
+  const [presets, setPresets] = useState<PresetEntry[]>([]);
+
+  useEffect(() => {
+    setPresets(getPresets('booth'));
+  }, []);
+
+  const handleSavePreset = () => {
+    const name = window.prompt('プリセット名を入力してください', 'BOOTH基本設定');
+    if (name) {
+      savePreset({ name, platform: 'booth', data: { productPrice, boostAmount } });
+      setPresets(getPresets('booth'));
+      window.alert('プリセットを保存しました。');
+    }
+  };
+
+  const handleLoadPreset = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const p = presets.find(x => x.id === e.target.value);
+    if (p) {
+      setProductPrice(p.data.productPrice);
+      setBoostAmount(p.data.boostAmount);
+    }
+  };
 
   const numProduct = parseInt(productPrice || '0', 10);
   const numBoost = parseInt(boostAmount || '0', 10);
@@ -33,6 +57,19 @@ export default function BoothCalculator() {
     return { totalPayment, serviceFee, withdrawalFee, netAmount };
   }, [numProduct, numBoost]);
 
+  const handleSaveHistory = () => {
+    if (totalPayment <= 0) return;
+    
+    saveHistory({
+      platform: 'BOOTH',
+      grossAmount: totalPayment,
+      fee: serviceFee + withdrawalFee,
+      netAmount: netAmount,
+      details: numBoost > 0 ? `BOOST: ${numBoost}円` : 'BOOSTなし',
+    });
+    window.alert('計算結果を履歴に保存しました。');
+  };
+
   // 수수료율 (참고용 표시)
   const effectiveFeeRate = totalPayment > 0
     ? ((serviceFee / totalPayment) * 100).toFixed(2)
@@ -52,7 +89,20 @@ export default function BoothCalculator() {
 
       {/* 입력 영역 */}
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
-        <h2 className="text-xl font-semibold mb-4">入力条件</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">入力条件</h2>
+          <div className="flex gap-2 items-center">
+            {presets.length > 0 && (
+              <select onChange={handleLoadPreset} className="text-sm border-gray-300 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800 px-2 py-1">
+                <option value="">プリセット読込...</option>
+                {presets.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+            )}
+            <button onClick={handleSavePreset} className="text-sm bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300 px-3 py-1 rounded-md hover:bg-orange-200 transition-colors">
+              プリセット保存
+            </button>
+          </div>
+        </div>
         <div className="space-y-5">
           <div>
             <label htmlFor="product-price" className="block text-sm font-medium mb-2">
@@ -149,6 +199,19 @@ export default function BoothCalculator() {
               ¥ {netAmount.toLocaleString()}
             </span>
           </div>
+        </div>
+
+        <div className="mt-8 border-t border-orange-200/50 dark:border-orange-800/50 pt-6">
+          <button
+            onClick={handleSaveHistory}
+            disabled={totalPayment <= 0}
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            この計算結果を履歴に保存
+          </button>
+          <p className="text-xs text-orange-600/80 dark:text-orange-300/80 text-center mt-3">
+            ※ このデータは現在のブラウザにのみ保存され、ブラウザのキャッシュを削除すると初期化されます。
+          </p>
         </div>
       </div>
 

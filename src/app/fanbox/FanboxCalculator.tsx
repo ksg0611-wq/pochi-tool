@@ -1,11 +1,35 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import AdSenseBanner from '@/components/AdSenseBanner';
+import { useAutoSave } from '@/hooks/useAutoSave';
+import { saveHistory, savePreset, getPresets, PresetEntry } from '@/lib/historyStore';
 
 export default function FanboxCalculator() {
-  const [amount, setAmount] = useState<string>('');
-  const [isR18, setIsR18] = useState<boolean>(false);
+  const [amount, setAmount] = useAutoSave<string>('fanbox_amount', '');
+  const [isR18, setIsR18] = useAutoSave<boolean>('fanbox_isR18', false);
+  const [presets, setPresets] = useState<PresetEntry[]>([]);
+
+  useEffect(() => {
+    setPresets(getPresets('fanbox'));
+  }, []);
+
+  const handleSavePreset = () => {
+    const name = window.prompt('プリセット名を入力してください', 'FANBOX基本設定');
+    if (name) {
+      savePreset({ name, platform: 'fanbox', data: { amount, isR18 } });
+      setPresets(getPresets('fanbox'));
+      window.alert('プリセットを保存しました。');
+    }
+  };
+
+  const handleLoadPreset = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const p = presets.find(x => x.id === e.target.value);
+    if (p) {
+      setAmount(p.data.amount);
+      setIsR18(p.data.isR18);
+    }
+  };
 
   // 연산 로직
   const { platformFee, withdrawalFee, netAmount } = useMemo(() => {
@@ -33,6 +57,19 @@ export default function FanboxCalculator() {
     return { platformFee, withdrawalFee, netAmount };
   }, [amount, isR18]);
 
+  const handleSaveHistory = () => {
+    const numAmount = parseInt(amount || '0', 10);
+    if (numAmount <= 0) return;
+    saveHistory({
+      platform: 'FANBOX',
+      grossAmount: numAmount,
+      fee: platformFee + withdrawalFee,
+      netAmount: netAmount,
+      details: isR18 ? 'R-18設定' : '全年齢',
+    });
+    window.alert('計算結果を履歴に保存しました。');
+  };
+
   // 시뮬레이션 부가 기능: 후원자 수 예측
   const plans = [100, 500, 1000, 3000];
   const numAmount = parseInt(amount || '0', 10);
@@ -48,7 +85,20 @@ export default function FanboxCalculator() {
       </div>
 
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
-        <h2 className="text-xl font-semibold mb-4">入力条件</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">入力条件</h2>
+          <div className="flex gap-2 items-center">
+            {presets.length > 0 && (
+              <select onChange={handleLoadPreset} className="text-sm border-gray-300 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800 px-2 py-1">
+                <option value="">プリセット読込...</option>
+                {presets.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+            )}
+            <button onClick={handleSavePreset} className="text-sm bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 px-3 py-1 rounded-md hover:bg-blue-200 transition-colors">
+              プリセット保存
+            </button>
+          </div>
+        </div>
         <div className="space-y-6">
           <div>
             <label htmlFor="amount" className="block text-sm font-medium mb-2">
@@ -106,6 +156,19 @@ export default function FanboxCalculator() {
               ¥ {netAmount.toLocaleString()}
             </span>
           </div>
+        </div>
+
+        <div className="mt-8 border-t border-blue-200/50 dark:border-blue-800/50 pt-6">
+          <button
+            onClick={handleSaveHistory}
+            disabled={numAmount <= 0}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            この計算結果を履歴に保存
+          </button>
+          <p className="text-xs text-blue-600/80 dark:text-blue-300/80 text-center mt-3">
+            ※ このデータは現在のブラウザにのみ保存され、ブラウザのキャッシュを削除すると初期化されます。
+          </p>
         </div>
       </div>
 

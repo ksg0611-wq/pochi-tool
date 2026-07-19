@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import AdSenseBanner from '@/components/AdSenseBanner';
+import { useAutoSave } from '@/hooks/useAutoSave';
+import { saveHistory, savePreset, getPresets, PresetEntry } from '@/lib/historyStore';
 
 // ────────────────────────────────────────────────
 // プラットフォーム別手取り額計算ロジック
@@ -49,9 +51,32 @@ const RANK_RING = [
 ];
 
 export default function CompareCalculator() {
-  const [amount, setAmount] = useState<string>('');
-  const [isSkebXLinked, setIsSkebXLinked] = useState<boolean>(false);
-  const [isSkebPast30Days, setIsSkebPast30Days] = useState<boolean>(false);
+  const [amount, setAmount] = useAutoSave<string>('compare_amount', '');
+  const [isSkebXLinked, setIsSkebXLinked] = useAutoSave<boolean>('compare_isSkebXLinked', false);
+  const [isSkebPast30Days, setIsSkebPast30Days] = useAutoSave<boolean>('compare_isSkebPast30Days', false);
+  const [presets, setPresets] = useState<PresetEntry[]>([]);
+
+  useEffect(() => {
+    setPresets(getPresets('compare'));
+  }, []);
+
+  const handleSavePreset = () => {
+    const name = window.prompt('プリセット名を入力してください', '比較シミュレーション基本設定');
+    if (name) {
+      savePreset({ name, platform: 'compare', data: { amount, isSkebXLinked, isSkebPast30Days } });
+      setPresets(getPresets('compare'));
+      window.alert('プリセットを保存しました。');
+    }
+  };
+
+  const handleLoadPreset = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const p = presets.find(x => x.id === e.target.value);
+    if (p) {
+      setAmount(p.data.amount);
+      setIsSkebXLinked(p.data.isSkebXLinked);
+      setIsSkebPast30Days(p.data.isSkebPast30Days);
+    }
+  };
 
   const numAmount = parseInt(amount || '0', 10);
   const isValid = !isNaN(numAmount) && numAmount > 0;
@@ -113,6 +138,19 @@ export default function CompareCalculator() {
   // 1位との差額
   const topNet = ranked[0]?.net ?? 0;
 
+  const handleSaveHistory = () => {
+    if (!isValid) return;
+    const top = ranked[0];
+    saveHistory({
+      platform: `Compare (1位: ${top.name})`,
+      grossAmount: numAmount,
+      fee: top.fee + top.withdrawal,
+      netAmount: top.net,
+      details: `${ranked[0].name} > ${ranked[1].name} > ${ranked[2].name}`,
+    });
+    window.alert('計算結果を履歴に保存しました。');
+  };
+
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       {/* ── Top Banner ── */}
@@ -128,9 +166,22 @@ export default function CompareCalculator() {
 
       {/* 入力エリア */}
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
-        <label htmlFor="compare-amount" className="block text-sm font-medium mb-3">
-          目標・比較したい金額（円）
-        </label>
+        <div className="flex justify-between items-center mb-4">
+          <label htmlFor="compare-amount" className="block text-sm font-medium">
+            目標・比較したい金額（円）
+          </label>
+          <div className="flex gap-2 items-center">
+            {presets.length > 0 && (
+              <select onChange={handleLoadPreset} className="text-sm border-gray-300 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800 px-2 py-1">
+                <option value="">プリセット読込...</option>
+                {presets.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+            )}
+            <button onClick={handleSavePreset} className="text-sm bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 px-3 py-1 rounded-md hover:bg-indigo-200 transition-colors">
+              プリセット保存
+            </button>
+          </div>
+        </div>
         <div className="relative mb-6">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">¥</span>
           <input
@@ -269,6 +320,20 @@ export default function CompareCalculator() {
             </div>
           );
         })}
+
+        {isValid && (
+          <div className="mt-8 border-t border-gray-200/50 dark:border-gray-800/50 pt-6">
+            <button
+              onClick={handleSaveHistory}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition-colors"
+            >
+              この計算結果を履歴に保存
+            </button>
+            <p className="text-xs text-indigo-600/80 dark:text-indigo-300/80 text-center mt-3">
+              ※ このデータは現在のブラウザにのみ保存され、ブラウザのキャッシュを削除すると初期化されます。
+            </p>
+          </div>
+        )}
       </div>
 
       {/* ── Mid Banner（黄金の地）── */}

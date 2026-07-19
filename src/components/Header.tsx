@@ -30,6 +30,7 @@ export default function Header() {
           <Link href="/price-calculator" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">単価計算</Link>
           <Link href="/compare" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Compare</Link>
           <Link href="/guide" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Guide</Link>
+          <Link href="/mypage" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-bold text-blue-600 dark:text-blue-400">MyPage(履歴)</Link>
         </nav>
         
         <div className="flex items-center gap-2 md:gap-4">
@@ -71,6 +72,7 @@ export default function Header() {
           <Link href="/price-calculator" className="text-lg font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors" onClick={closeMenu}>単価計算</Link>
           <Link href="/compare" className="text-lg font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors" onClick={closeMenu}>Compare</Link>
           <Link href="/guide" className="text-lg font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors" onClick={closeMenu}>Guide</Link>
+          <Link href="/mypage" className="text-lg font-bold text-blue-600 dark:text-blue-400 transition-colors" onClick={closeMenu}>MyPage(履歴)</Link>
         </nav>
       )}
     </header>
