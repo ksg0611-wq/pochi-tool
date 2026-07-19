@@ -6,9 +6,9 @@ import { useAutoSave } from '@/hooks/useAutoSave';
 import { saveHistory, savePreset, getPresets, PresetEntry } from '@/lib/historyStore';
 
 export default function SkebCalculator() {
-  const [amount, setAmount] = useAutoSave<string>('skeb_amount', '');
-  const [isXLinked, setIsXLinked] = useAutoSave<boolean>('skeb_isXLinked', false);
-  const [isPast30Days, setIsPast30Days] = useAutoSave<boolean>('skeb_isPast30Days', false);
+  const [amount, setAmount] = useAutoSave<string>('skeb_amount', '', 'amount');
+  const [isXLinked, setIsXLinked] = useAutoSave<boolean>('skeb_isXLinked', false, 'xlink');
+  const [isPast30Days, setIsPast30Days] = useAutoSave<boolean>('skeb_isPast30Days', false, 'past30');
   const [presets, setPresets] = useState<PresetEntry[]>([]);
 
   useEffect(() => {
@@ -73,6 +73,19 @@ export default function SkebCalculator() {
       details: details,
     });
     window.alert('計算結果を履歴に保存しました。');
+  };
+
+  const handleShareX = () => {
+    if (numAmount <= 0) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set('amount', amount);
+    url.searchParams.set('xlink', String(isXLinked));
+    url.searchParams.set('past30', String(isPast30Days));
+    
+    const text = `Skebで${numAmount.toLocaleString()}円のリクエストを受けたら？\n手数料合計：${platformFee.toLocaleString()}円\n実際の手取り：${netAmount.toLocaleString()}円 💸\n\nクリエイター手数料計算ツール「PochiTool」で確認しよう！\n`;
+    
+    const shareUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url.toString())}&hashtags=PochiTool,Skeb,手数料計算`;
+    window.open(shareUrl, '_blank');
   };
 
   const feeRatePercent = `${(feeRate * 100).toFixed(1)}%`;
@@ -211,7 +224,15 @@ export default function SkebCalculator() {
           >
             この計算結果を履歴に保存
           </button>
-          <p className="text-xs text-teal-600/80 dark:text-teal-300/80 text-center mt-3">
+          <button
+            onClick={handleShareX}
+            disabled={numAmount <= 0}
+            className="w-full bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white font-bold py-3 px-4 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-3"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="w-5 h-5 fill-current"><g><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></g></svg>
+            Xで結果をシェア
+          </button>
+          <p className="text-xs text-teal-600/80 dark:text-teal-300/80 text-center mt-4">
             ※ このデータは現在のブラウザにのみ保存され、ブラウザのキャッシュを削除すると初期化されます。
           </p>
         </div>
