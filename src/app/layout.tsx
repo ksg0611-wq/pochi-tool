@@ -43,6 +43,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
+      <head>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8195982419600082" crossOrigin="anonymous"></script>
+      </head>
       <body className={`${inter.className} min-h-screen flex flex-col`}>
         {/*
           AdSense スクリプト:
