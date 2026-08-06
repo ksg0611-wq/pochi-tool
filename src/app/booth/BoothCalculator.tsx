@@ -41,8 +41,8 @@ export default function BoothCalculator() {
     // 1. 총 결제 금액
     const totalPayment = p + b;
 
-    // 2. 서비스 수수료: Math.floor(총 결제 금액 × 5.6%) + 22엔
-    const serviceFee = Math.floor(totalPayment * 0.056) + 22;
+    // 2. 서비스 수수료: Math.floor(총 결제 금액 × 5.6%) + 45엔 (2025年10月28日改定)
+    const serviceFee = Math.floor(totalPayment * 0.056) + 45;
 
     // 3. 은행 출금 수수료: (총 결제 금액 - 서비스 수수료) 기준
     const afterServiceFee = totalPayment - serviceFee;
@@ -95,7 +95,7 @@ export default function BoothCalculator() {
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">BOOTH 手数料計算</h1>
         <p className="text-gray-600 dark:text-gray-400">
-          決済手数料（5.6% + 22円）・BOOST・振込手数料をまとめて計算
+          決済手数料（5.6% + 45円）・BOOST・振込手数料をまとめて計算
         </p>
       </div>
 
@@ -154,7 +154,7 @@ export default function BoothCalculator() {
               />
             </div>
             <p className="text-xs text-gray-400 mt-1">
-              ※ BOOSTにも同じ決済手数料（5.6% + 22円）が合算適用されます
+              ※ BOOSTにも同じ決済手数料（5.6% + 45円）が合算適用されます
             </p>
           </div>
         </div>
@@ -182,7 +182,7 @@ export default function BoothCalculator() {
 
           <div className="flex justify-between items-center py-2 border-b border-orange-200/50 dark:border-orange-800/50">
             <div>
-              <span className="text-gray-600 dark:text-gray-300">決済手数料（5.6% + 22円）</span>
+              <span className="text-gray-600 dark:text-gray-300">決済手数料（5.6% + 45円）</span>
               {totalPayment > 0 && (
                 <span className="ml-2 text-xs text-gray-400">実効率 {effectiveFeeRate}%</span>
               )}
@@ -242,11 +242,11 @@ export default function BoothCalculator() {
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
         <h2 className="text-lg font-semibold mb-4">価格帯別 手数料シミュレーション</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          代表的な商品価格でのサービス手数料（5.6% + 22円）と手取り額の目安
+          代表的な商品価格でのサービス手数料（5.6% + 45円）と手取り額の目安
         </p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[500, 1000, 3000, 5000].map((price) => {
-            const fee = Math.floor(price * 0.056) + 22;
+            const fee = Math.floor(price * 0.056) + 45;
             const net = price - fee;
             const rateStr = ((fee / price) * 100).toFixed(1);
             return (
@@ -273,7 +273,7 @@ export default function BoothCalculator() {
       <AdSenseBanner size="leaderboard" />
 
       <p className="text-xs text-gray-500 dark:text-gray-400 mt-6 leading-relaxed">
-        ※ 本計算機は1回の注文（決済）を基準とした手数料（5.6% + 22円）を計算します。複数回に分割した決済が発生した場合、実際の手数料合計は異なる場合があります。<br />
+        ※ 本計算機は1回の注文（決済）を基準とした手数料（5.6% + 45円）を計算します。複数回に分割した決済が発生した場合、実際の手数料合計は異なる場合があります。<br />
         最終確認日: 2026年7月14日
       </p>
     </div>

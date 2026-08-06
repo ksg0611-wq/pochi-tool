@@ -31,7 +31,7 @@ function calcReversePrice(targetNet: number, platform: string, isSkebXLinked: bo
       const fee = Math.floor(mid * feeRate);
       net = Math.max(0, mid - fee);
     } else if (platform === 'booth') {
-      const serviceFee = Math.floor(mid * 0.056) + 22;
+      const serviceFee = Math.floor(mid * 0.056) + 45;
       const afterFee = mid - serviceFee;
       const withdrawal = afterFee > 0 ? (afterFee < 30000 ? 200 : 300) : 0;
       net = Math.max(0, mid - serviceFee - withdrawal);

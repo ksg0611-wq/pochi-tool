@@ -34,8 +34,8 @@ function calcSkeb(amount: number, isXLinked: boolean, isPast30Days: boolean): { 
 }
 
 function calcBooth(amount: number): { net: number; fee: number; withdrawal: number } {
-  // BOOSTなし商品価格基準: 5.6% + 22円
-  const serviceFee = Math.floor(amount * 0.056) + 22;
+  // BOOSTなし商品価格基準: 5.6% + 45円（2025年10月28日改定）
+  const serviceFee = Math.floor(amount * 0.056) + 45;
   const afterFee = amount - serviceFee;
   const withdrawal = afterFee > 0 ? (afterFee < 30000 ? 200 : 300) : 0;
   const net = Math.max(0, amount - serviceFee - withdrawal);
@@ -119,7 +119,7 @@ export default function CompareCalculator() {
       {
         id: 'booth',
         name: 'BOOTH',
-        note: 'BOOSTなし・5.6%+22円',
+        note: 'BOOSTなし: 5.6%+45円',
         href: '/booth',
         ...boothResult,
         color: {
@@ -345,7 +345,7 @@ export default function CompareCalculator() {
           <p className="font-semibold text-gray-600 dark:text-gray-300 mb-2">比較の前提条件</p>
           <p>・ FANBOX：全年齢設定（R-18なし）、手数料 10%</p>
           <p>・ Skeb：上記で設定した割引条件を適用（5,000円未満は無条件で9.8%）、振込手数料 0円</p>
-          <p>・ BOOTH：BOOST なし、手数料 5.6% + 22円</p>
+          <p>・ BOOTH：BOOST なし、手数料 5.6% + 45円</p>
           <p className="mt-2 text-red-500">※ Skebはリクエスト金額が5,000円未満の場合、割引条件を満たしていても一律9.8%の手数料が適用されます。</p>
         </div>
       )}
