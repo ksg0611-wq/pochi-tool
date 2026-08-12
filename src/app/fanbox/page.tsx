@@ -4,6 +4,7 @@ import FanboxCalculator from './FanboxCalculator';
 export const metadata: Metadata = {
   title: 'FANBOX 手数料・手取り計算機 | PochiTool',
   description: 'FANBOXクリエイターのための最新手数料率（R-18設定および定額振込手数料反映）に基づいた高精度な計算機です。',
+  alternates: { canonical: "https://www.pochi-tool.com/fanbox" },
 };
 
 export default function FanboxPage() {

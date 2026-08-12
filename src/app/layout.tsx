@@ -16,6 +16,7 @@ const ADSENSE_PUBLISHER_ID = "ca-pub-XXXXXXXXXXXXXXXXX";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.pochi-tool.com"),
+  alternates: { canonical: "https://www.pochi-tool.com" },
   title: "PochiTool - クリエイター向け手数料計算ツール",
   description: "FANBOX、Skeb、BOOTHなどのプラットフォームの手数料を簡単に計算・比較できるツールです。",
   openGraph: {
